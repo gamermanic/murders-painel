@@ -150,7 +150,7 @@
         <div class="btn-row">
           <button class="btn btn-primary" onclick="openMemberModal()">➕ Novo membro</button>
           <button class="btn btn-danger" onclick="clearAllMembers()">🗑️ Apagar todos</button>
-          <button class="btn btn-secondary" onclick="sendToDiscord('membros')">💬 Discord</button>
+          <button class="btn btn-secondary" onclick="sendDiscordMembers()">💬 Discord</button>
         </div>
         <div class="input-row">
           <input id="searchMembers" class="input" placeholder="🔍 Buscar nick..." oninput="renderMembers()" style="flex: 1;">
@@ -176,7 +176,7 @@
         <div class="btn-row">
           <button class="btn btn-primary" onclick="openEventModal()">➕ Novo evento</button>
           <button class="btn btn-danger" onclick="clearAllEvents()">🗑️ Apagar tudo</button>
-          <button class="btn btn-secondary" onclick="sendToDiscord('presencas')">💬 Discord</button>
+          <button class="btn btn-secondary" onclick="sendDiscordEvents()">💬 Discord</button>
         </div>
         <div class="input-row">
           <select id="filterEvent" onchange="renderEvents()">
@@ -204,7 +204,7 @@
           <button class="btn btn-primary" onclick="openDeliveryModal()">➕ Registrar entrega</button>
           <button class="btn btn-secondary" onclick="showMonthlyReport()">📋 Relatório mensal</button>
           <button class="btn btn-danger" onclick="clearAllDeliveries()">🗑️ Apagar tudo</button>
-          <button class="btn btn-secondary" onclick="sendToDiscord('entregas')">💬 Discord</button>
+          <button class="btn btn-secondary" onclick="sendDiscordDeliveries()">💬 Discord</button>
         </div>
         <div class="input-row">
           <input id="searchDeliveriesNick" class="input" placeholder="🔍 Buscar nick..." oninput="renderDeliveries()" style="flex: 1;">
@@ -269,8 +269,8 @@
         </div>
         <div class="card" style="margin-top: 15px;">
           <div class="btn-row">
-            <button class="btn btn-danger" id="btnApagarRepo" onclick="apagarRepositorio()">🗑️ Apagar todo repositório</button>
-            <button class="btn btn-secondary" onclick="sendToDiscord('repo')">💬 Enviar para Discord</button>
+            <button class="btn btn-danger" onclick="apagarRepositorio()">🗑️ Apagar todo repositório</button>
+            <button class="btn btn-secondary" onclick="sendDiscordRepo()">💬 Discord</button>
           </div>
         </div>
       </div>
@@ -494,23 +494,117 @@
       saveState();
     }
 
-    function sendToDiscord(tipo) {
-      let webhookUrl = '';
-      if (!state.webhooks || !state.webhooks[state.clan]) {
-        showMessage('⚠️ Configure o webhook', 'error');
-        return;
+    function sendDiscordMembers() {
+      const url = state.webhooks[state.clan].members;
+      if (!url) { showMessage('⚠️ Configure webhook de membros', 'error'); return; }
+      const msg = formatMembersMessage();
+      enviarDiscord(url, msg);
+    }
+
+    function sendDiscordEvents() {
+      const url = state.webhooks[state.clan].events;
+      if (!url) { showMessage('⚠️ Configure webhook de presença', 'error'); return; }
+      const msg = formatEventsMessage();
+      enviarDiscord(url, msg);
+    }
+
+    function sendDiscordDeliveries() {
+      const url = state.webhooks[state.clan].deliveries;
+      if (!url) { showMessage('⚠️ Configure webhook de entregas', 'error'); return; }
+      const msg = formatDeliveriesMessage();
+      enviarDiscord(url, msg);
+    }
+
+    function sendDiscordRepo() {
+      const url = state.webhooks[state.clan].repo;
+      if (!url) { showMessage('⚠️ Configure webhook de repositório', 'error'); return; }
+      const msg = formatRepoMessage();
+      enviarDiscord(url, msg);
+    }
+
+    function formatMembrosMessage() {
+      let msg = `**👥 MEMBROS - CLAN ${state.clan}**\n\n`;
+      const members = state.members[state.clan] || [];
+      if (members.length === 0) {
+        msg += 'Nenhum membro registrado';
+      } else {
+        members.forEach(m => {
+          msg += `**${m.nick}** - Nível: ${m.level} | Power: ${m.power} | ${m.classe}\n`;
+        });
       }
-      
-      if (tipo === 'membros') webhookUrl = state.webhooks[state.clan].members || '';
-      else if (tipo === 'presencas') webhookUrl = state.webhooks[state.clan].events || '';
-      else if (tipo === 'entregas') webhookUrl = state.webhooks[state.clan].deliveries || '';
-      else if (tipo === 'repo') webhookUrl = state.webhooks[state.clan].repo || '';
-      
-      if (!webhookUrl) {
-        showMessage('⚠️ Configure o webhook para ' + tipo, 'error');
-        return;
+      return msg;
+    }
+
+    function formatMembersMessage() {
+      let msg = `**👥 MEMBROS - CLAN ${state.clan}**\n\n`;
+      const members = state.members[state.clan] || [];
+      if (members.length === 0) {
+        msg += 'Nenhum membro registrado';
+      } else {
+        members.forEach(m => {
+          msg += `**${m.nick}** - Nível: ${m.level} | Power: ${m.power} | ${m.classe}\n`;
+        });
       }
-      showMessage('📤 Enviando...', 'success');
+      return msg;
+    }
+
+    function formatEventsMessage() {
+      let msg = `**📊 PRESENÇA - CLAN ${state.clan}**\n\n`;
+      const events = state.events[state.clan] || [];
+      if (events.length === 0) {
+        msg += 'Nenhum evento registrado';
+      } else {
+        events.forEach(e => {
+          msg += `**${e.nick}** - ${e.evento} | Status: ${e.status}\n`;
+        });
+      }
+      return msg;
+    }
+
+    function formatDeliveriesMessage() {
+      let msg = `**📦 ENTREGAS - CLAN ${state.clan}**\n\n`;
+      const deliveries = state.deliveries[state.clan] || [];
+      if (deliveries.length === 0) {
+        msg += 'Nenhuma entrega registrada';
+      } else {
+        deliveries.forEach(d => {
+          msg += `**${d.nick}** (${d.classe}) - ${d.descricao}\n`;
+        });
+      }
+      return msg;
+    }
+
+    function formatRepoMessage() {
+      let msg = `**📂 REPOSITÓRIO - CLAN ${state.clan}**\n\n`;
+      const items = state.repoItems[state.clan] || [];
+      if (items.length === 0) {
+        msg += 'Nenhum item no repositório';
+      } else {
+        items.forEach(r => {
+          msg += `**${r.item}** - Qtd: ${r.qtd} | Boss: ${r.boss}\n`;
+        });
+      }
+      return msg;
+    }
+
+    function enviarDiscord(webhookUrl, conteudo) {
+      const payload = { content: conteudo };
+      
+      fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => {
+        if (res.ok) {
+          showMessage('✅ Enviado para Discord!', 'success');
+        } else {
+          showMessage('❌ Erro: ' + res.status, 'error');
+        }
+      })
+      .catch(err => {
+        showMessage('❌ Erro na conexão', 'error');
+      });
     }
 
     function clickImportJSON() {
