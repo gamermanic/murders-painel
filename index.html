@@ -258,7 +258,6 @@
           </div>
           <div class="btn-row" style="margin-top:8px;">
             <button class="btn btn-primary" onclick="addRepoItem()">Salvar</button>
-            <button class="btn btn-danger" onclick="clearRepo()">Limpar</button>
           </div>
         </div>
         <input id="searchRepoItem" class="input" placeholder="🔍 Buscar..." oninput="renderRepo()" style="margin-bottom: 15px;">
@@ -269,7 +268,10 @@
           </table>
         </div>
         <div class="card" style="margin-top: 15px;">
-          <button class="btn btn-secondary" onclick="sendToDiscord('repo')">💬 Enviar para Discord</button>
+          <div class="btn-row">
+            <button class="btn btn-danger" id="btnApagarRepo" onclick="apagarRepositorio()">🗑️ Apagar todo repositório</button>
+            <button class="btn btn-secondary" onclick="sendToDiscord('repo')">💬 Enviar para Discord</button>
+          </div>
         </div>
       </div>
     </div>
@@ -407,7 +409,6 @@
         const raw = localStorage.getItem(STORAGE_KEY);
         if (raw) {
           state = JSON.parse(raw);
-          console.log('✅ Estado carregado');
         }
       } catch (e) {
         console.error('Erro ao carregar:', e);
@@ -524,26 +525,50 @@
       reader.onload = function(e) {
         try {
           const imported = JSON.parse(e.target.result);
-          if (Array.isArray(imported)) {
-            state.members[state.clan] = imported;
-            saveState();
-            renderAll();
-            showMessage(`✅ ${imported.length} membros importados!`, 'success');
-          } else if (imported.repoItems) {
+          
+          if (Array.isArray(imported) && imported.length > 0) {
+            if (imported[0].nome !== undefined && (imported[0].quantidade !== undefined || imported[0].origem !== undefined)) {
+              const repoItems = imported.map(item => ({
+                item: item.nome || '',
+                tipo: '',
+                boss: item.origem || '',
+                qtd: parseInt(item.quantidade) || 0
+              }));
+              state.repoItems[state.clan] = repoItems;
+              saveState();
+              renderRepo();
+              showMessage(`✅ ${repoItems.length} itens importados!`, 'success');
+              return;
+            }
+            
+            if (imported[0].nick !== undefined && imported[0].nome === undefined) {
+              state.members[state.clan] = imported;
+              saveState();
+              renderMembers();
+              showMessage(`✅ ${imported.length} membros importados!`, 'success');
+              return;
+            }
+          }
+          
+          if (imported.repoItems && Array.isArray(imported.repoItems)) {
             state.repoItems[state.clan] = imported.repoItems;
             saveState();
-            renderAll();
+            renderRepo();
             showMessage(`✅ ${imported.repoItems.length} itens importados!`, 'success');
-          } else if (imported.members && imported.events && imported.deliveries && imported.repoItems) {
+            return;
+          }
+          
+          if (imported.members && imported.events && imported.deliveries && imported.repoItems) {
             state = imported;
             saveState();
             renderAll();
-            showMessage('✅ Dados importados!', 'success');
-          } else {
-            showMessage('❌ Formato inválido!', 'error');
+            showMessage('✅ Dados completos importados!', 'success');
+            return;
           }
+          
+          showMessage('❌ Formato de arquivo não reconhecido!', 'error');
         } catch (err) {
-          showMessage('❌ Erro: ' + err.message, 'error');
+          showMessage('❌ Erro ao ler arquivo: ' + err.message, 'error');
         }
       };
       reader.readAsText(file, 'utf-8');
@@ -612,13 +637,11 @@
     }
 
     function deleteMember(index) {
-      if (confirm('Excluir?')) {
-        state.members[state.clan].splice(index, 1);
-        saveState();
-        renderMembers();
-        fillEventNickOptions();
-        showMessage('✅ Excluído!', 'success');
-      }
+      state.members[state.clan].splice(index, 1);
+      saveState();
+      renderMembers();
+      fillEventNickOptions();
+      showMessage('✅ Excluído!', 'success');
     }
 
     function renderMembers() {
@@ -641,7 +664,7 @@
     }
 
     function clearAllMembers() {
-      if (confirm('Apagar TODOS?')) {
+      if (confirm('Apagar TODOS os membros?')) {
         state.members[state.clan] = [];
         saveState();
         renderMembers();
@@ -697,12 +720,10 @@
     }
 
     function deleteEvent(index) {
-      if (confirm('Excluir?')) {
-        state.events[state.clan].splice(index, 1);
-        saveState();
-        renderEvents();
-        showMessage('✅ Excluído!', 'success');
-      }
+      state.events[state.clan].splice(index, 1);
+      saveState();
+      renderEvents();
+      showMessage('✅ Excluído!', 'success');
     }
 
     function renderEvents() {
@@ -727,7 +748,7 @@
     }
 
     function clearAllEvents() {
-      if (confirm('Apagar TODOS?')) {
+      if (confirm('Apagar TODOS os eventos?')) {
         state.events[state.clan] = [];
         saveState();
         renderEvents();
@@ -770,12 +791,10 @@
     }
 
     function deleteDelivery(index) {
-      if (confirm('Excluir?')) {
-        state.deliveries[state.clan].splice(index, 1);
-        saveState();
-        renderDeliveries();
-        showMessage('✅ Excluído!', 'success');
-      }
+      state.deliveries[state.clan].splice(index, 1);
+      saveState();
+      renderDeliveries();
+      showMessage('✅ Excluído!', 'success');
     }
 
     function renderDeliveries() {
@@ -798,7 +817,7 @@
     }
 
     function clearAllDeliveries() {
-      if (confirm('Apagar TODOS?')) {
+      if (confirm('Apagar TODOS as entregas?')) {
         state.deliveries[state.clan] = [];
         saveState();
         renderDeliveries();
@@ -865,22 +884,20 @@
       showMessage('✅ Salvo!', 'success');
     }
 
-    function clearRepo() {
-      if (confirm('Limpar?')) {
+    function apagarRepositorio() {
+      if (confirm('Tem certeza que deseja apagar TODO O REPOSITÓRIO do Clan ' + state.clan + '?')) {
         state.repoItems[state.clan] = [];
         saveState();
         renderRepo();
-        showMessage('✅ Limpo!', 'success');
+        showMessage('✅ Repositório apagado com sucesso!', 'success');
       }
     }
 
     function deleteRepoItem(index) {
-      if (confirm('Remover?')) {
-        state.repoItems[state.clan].splice(index, 1);
-        saveState();
-        renderRepo();
-        showMessage('✅ Removido!', 'success');
-      }
+      state.repoItems[state.clan].splice(index, 1);
+      saveState();
+      renderRepo();
+      showMessage('✅ Item removido!', 'success');
     }
 
     function renderAll() {
