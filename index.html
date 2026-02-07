@@ -492,33 +492,111 @@
       saveState();
     }
 
+    // --------- ENVIO PARA DISCORD COM EMBEDS ---------
+
     function sendDiscordMembers() {
-      const url = state.webhooks[state.clan].members;
+      const url = state.webhooks[state.clan]?.members;
       if (!url) { showMessage('⚠️ Configure webhook de membros', 'error'); return; }
-      const msg = formatMembersMessage();
-      enviarDiscord(url, msg);
+
+      const members = state.members[state.clan] || [];
+      const description =
+        members.length === 0
+          ? "_Nenhum membro registrado._"
+          : members
+              .map(m => `• **${m.nick}** — Nível ${m.level} | Power ${m.power} | Classe: ${m.classe}`)
+              .join("\n");
+
+      const payload = {
+        embeds: [{
+          title: "👥 Membros - Clan " + state.clan,
+          description,
+          color: 0x3498db
+        }]
+      };
+
+      enviarDiscord(url, payload);
     }
 
     function sendDiscordEvents() {
-      const url = state.webhooks[state.clan].events;
+      const url = state.webhooks[state.clan]?.events;
       if (!url) { showMessage('⚠️ Configure webhook de presença', 'error'); return; }
-      const msg = formatEventsMessage();
-      enviarDiscord(url, msg);
+
+      const events = state.events[state.clan] || [];
+      const description =
+        events.length === 0
+          ? "_Nenhum evento registrado._"
+          : events.map(e => {
+              const icon =
+                e.status === "Presente" ? "✅" :
+                e.status === "Faltou"   ? "❌" :
+                                          "🟡";
+              let line = `• **${e.nick}** — ${e.evento} ${icon} (${e.status})`;
+              if (e.justificativa && e.justificativa.trim() !== "") {
+                line += ` — _${e.justificativa}_`;
+              }
+              return line;
+            }).join("\n");
+
+      const payload = {
+        embeds: [{
+          title: "🗓️ Presença - Clan " + state.clan,
+          description,
+          color: 0xf1c40f
+        }]
+      };
+
+      enviarDiscord(url, payload);
     }
 
     function sendDiscordDeliveries() {
-      const url = state.webhooks[state.clan].deliveries;
+      const url = state.webhooks[state.clan]?.deliveries;
       if (!url) { showMessage('⚠️ Configure webhook de entregas', 'error'); return; }
-      const msg = formatDeliveriesMessage();
-      enviarDiscord(url, msg);
+
+      const deliveries = state.deliveries[state.clan] || [];
+      const description =
+        deliveries.length === 0
+          ? "_Nenhuma entrega registrado._"
+          : deliveries
+              .map(d => `• **${d.nick}** (${d.classe}) — ${d.descricao}`)
+              .join("\n");
+
+      const payload = {
+        embeds: [{
+          title: "📦 Entregas - Clan " + state.clan,
+          description,
+          color: 0x2ecc71
+        }]
+      };
+
+      enviarDiscord(url, payload);
     }
 
     function sendDiscordRepo() {
-      const url = state.webhooks[state.clan].repo;
+      const url = state.webhooks[state.clan]?.repo;
       if (!url) { showMessage('⚠️ Configure webhook de repositório', 'error'); return; }
-      const msg = formatRepoMessage();
-      enviarDiscord(url, msg);
+
+      const items = state.repoItems[state.clan] || [];
+      const description =
+        items.length === 0
+          ? "_Nenhum item no repositório._"
+          : items.map(r =>
+              `• **${r.item}** — Qtd: ${r.qtd}` +
+              (r.boss ? ` | Boss: ${r.boss}` : "") +
+              (r.tipo ? ` | Tipo: ${r.tipo}` : "")
+            ).join("\n");
+
+      const payload = {
+        embeds: [{
+          title: "📚 Repositório - Clan " + state.clan,
+          description,
+          color: 0x9b59b6
+        }]
+      };
+
+      enviarDiscord(url, payload);
     }
+
+    // --------- FORMATADORES DE TEXTO (mantidos) ---------
 
     function formatMembrosMessage() {
       let msg = `**👥 MEMBROS - CLAN ${state.clan}**\n\n`;
@@ -585,9 +663,9 @@
       return msg;
     }
 
-    function enviarDiscord(webhookUrl, conteudo) {
-      const payload = { content: conteudo };
-      
+    // --------- ENVIAR DISCORD (AGORA RECEBE PAYLOAD DE EMBED) ---------
+
+    function enviarDiscord(webhookUrl, payload) {
       fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
