@@ -155,8 +155,7 @@
         <div class="input-row">
           <input id="searchMembers" class="input" placeholder="🔍 Buscar nick..." oninput="renderMembers()" style="flex: 1;">
           <select id="filterClass" onchange="renderMembers()">
-            <option value="">Todas as classes</option>
-            <option>Arqueira</option><option>Bardo</option><option>Berserker</option><option>Lanceiro</option><option>Maga</option><option>Mago</option>
+            <option value="">Todas as classes</option><option>Arqueira</option><option>Bardo</option><option>Berserker</option><option>Lanceiro</option><option>Maga</option><option>Mago</option>
           </select>
         </div>
         <div class="table-container">
@@ -203,7 +202,6 @@
         <div class="btn-row">
           <button class="btn btn-primary" onclick="openDeliveryModal()">➕ Registrar entrega</button>
           <button class="btn btn-secondary" onclick="showMonthlyReport()">📋 Relatório mensal</button>
-          <button class="btn btn-danger" onclick="clearAllDeliveries()">🗑️ Apagar tudo</button>
           <button class="btn btn-secondary" onclick="sendDiscordDeliveries()">💬 Discord</button>
         </div>
         <div class="input-row">
@@ -898,20 +896,21 @@
       const filterClass = document.getElementById('filterDeliveriesClass')?.value || '';
       if (search) list = list.filter(d => d.nick.toLowerCase().includes(search));
       if (filterClass) list = list.filter(d => d.classe === filterClass);
+      list = list.map((d, idx) => ({ ...d, _idx: idx }));
       list.sort((a, b) => a.nick.localeCompare(b.nick, 'pt-BR'));
-      body.innerHTML = list.map((d, i) => `
+      body.innerHTML = list.map((d) => `
         <tr>
           <td>${toBRFromISO(d.data)}</td><td>${d.nick}</td><td>${d.classe}</td><td>${d.descricao}</td>
           <td>
-            <button class="btn btn-secondary" style="padding:3px 8px;font-size:11px;" onclick="openDeliveryModal(${i})">Editar</button>
-            <button class="btn btn-danger" style="padding:3px 8px;font-size:11px;" onclick="deleteDelivery(${i})">Excluir</button>
+            <button class="btn btn-secondary" style="padding:3px 8px;font-size:11px;" onclick="openDeliveryModal(${d._idx})">Editar</button>
+            <button class="btn btn-danger" style="padding:3px 8px;font-size:11px;" onclick="deleteDelivery(${d._idx})">Excluir</button>
           </td>
         </tr>
       `).join('') || '<tr><td colspan="5">Nenhum</td></tr>';
     }
 
     function clearAllDeliveries() {
-      if (confirm('Apagar TODOS as entregas?')) {
+      if (confirm('Apagar TODAS as entregas?')) {
         state.deliveries[state.clan] = [];
         saveState();
         renderDeliveries();
@@ -920,78 +919,111 @@
     }
 
     function showMonthlyReport() {
-      document.getElementById('monthly-report-card').style.display = 'block';
-      if (!document.getElementById('reportMonth').value) {
-        const now = new Date();
-        document.getElementById('reportMonth').value = now.toISOString().slice(0, 7);
+      const card = document.getElementById('monthly-report-card');
+      card.style.display = card.style.display === 'none' || card.style.display === '' ? 'block' : 'none';
+      if (card.style.display === 'block') {
+        renderMonthlyReport();
       }
-      renderMonthlyReport();
     }
 
     function renderMonthlyReport() {
       const monthInput = document.getElementById('reportMonth').value;
-      const body = document.getElementById('monthly-report-body');
-      if (!monthInput) return;
+      const tbody = document.getElementById('monthly-report-body');
+      if (!monthInput) {
+        tbody.innerHTML = '<tr><td colspan="2">Selecione um mês</td></tr>';
+        return;
+      }
       const [year, month] = monthInput.split('-');
-      const list = (state.deliveries[state.clan] || []).filter(d => d.data && d.data.startsWith(year + '-' + month));
-      const byNick = {};
-      list.forEach(d => {
-        if (!byNick[d.nick]) byNick[d.nick] = [];
-        byNick[d.nick].push(d.descricao || '(sem descrição)');
+      const list = (state.deliveries[state.clan] || []).filter(d => {
+        if (!d.data) return false;
+        const [y, m] = d.data.split('-');
+        return y === year && m === month;
       });
-      const nicks = Object.keys(byNick).sort((a, b) => a.localeCompare(b, 'pt-BR'));
-      body.innerHTML = nicks.map(nick => `
-        <tr><td>${nick}</td><td>${byNick[nick].join(' • ')}</td></tr>
-      `).join('') || '<tr><td colspan="2">Nenhum</td></tr>';
-    }
-
-    function renderRepo() {
-      const tbody = document.getElementById('repoTableBody');
-      let list = [...(state.repoItems[state.clan] || [])];
-      const search = (document.getElementById('searchRepoItem')?.value || '').toLowerCase();
-      if (search) list = list.filter(r => (r.item || '').toLowerCase().includes(search));
-      tbody.innerHTML = list.map((r, i) => `
+      if (list.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="2">Nenhuma entrega no período</td></tr>';
+        return;
+      }
+      const summary = {};
+      list.forEach(d => {
+        if (!summary[d.nick]) summary[d.nick] = [];
+        summary[d.nick].push(d.descricao);
+      });
+      tbody.innerHTML = Object.entries(summary).map(([nick, descs]) => `
         <tr>
-          <td>${r.item}</td><td>${r.tipo || ''}</td><td>${r.boss || ''}</td><td>${r.qtd || ''}</td>
-          <td><button class="btn btn-danger" style="padding:3px 8px;font-size:11px;" onclick="deleteRepoItem(${i})">Excluir</button></td>
+          <td>${nick}</td>
+          <td>${descs.join('; ')}</td>
         </tr>
-      `).join('') || '<tr><td colspan="5">Nenhum</td></tr>';
+      `).join('');
     }
 
     function addRepoItem() {
-      const nome = document.getElementById('repoItem').value.trim();
-      if (!nome) { showMessage('❌ Nome obrigatório', 'error'); return; }
-      const list = state.repoItems[state.clan] || (state.repoItems[state.clan] = []);
-      const idx = list.findIndex(r => r.item.toLowerCase() === nome.toLowerCase());
+      const item = document.getElementById('repoItem').value.trim();
+      const tipo = document.getElementById('repoType').value.trim();
+      const boss = document.getElementById('repoBoss').value.trim();
       const qtd = parseInt(document.getElementById('repoQuantity').value) || 0;
-      if (idx >= 0) {
-        list[idx] = { item: nome, tipo: document.getElementById('repoType').value.trim(), boss: document.getElementById('repoBoss').value.trim(), qtd };
-      } else {
-        list.push({ item: nome, tipo: document.getElementById('repoType').value.trim(), boss: document.getElementById('repoBoss').value.trim(), qtd });
+      if (!item || !qtd) {
+        showMessage('❌ Item e quantidade obrigatórios!', 'error');
+        return;
       }
+      state.repoItems[state.clan].push({ item, tipo, boss, qtd });
+      saveState();
+      renderRepo();
       document.getElementById('repoItem').value = '';
       document.getElementById('repoType').value = '';
       document.getElementById('repoBoss').value = '';
       document.getElementById('repoQuantity').value = '';
-      saveState();
-      renderRepo();
       showMessage('✅ Salvo!', 'success');
     }
 
-    function apagarRepositorio() {
-      if (confirm('Tem certeza que deseja apagar TODO O REPOSITÓRIO do Clan ' + state.clan + '?')) {
-        state.repoItems[state.clan] = [];
-        saveState();
-        renderRepo();
-        showMessage('✅ Repositório apagado com sucesso!', 'success');
+    function renderRepo() {
+      const tbody = document.getElementById('repoTableBody');
+      const search = (document.getElementById('searchRepoItem')?.value || '').toLowerCase();
+      let list = [...(state.repoItems[state.clan] || [])];
+      if (search) {
+        list = list.filter(r =>
+          (r.item || '').toLowerCase().includes(search) ||
+          (r.tipo || '').toLowerCase().includes(search) ||
+          (r.boss || '').toLowerCase().includes(search)
+        );
       }
+      list.sort((a, b) => (a.item || '').localeCompare(b.item || '', 'pt-BR'));
+      tbody.innerHTML = list.map((r, i) => `
+        <tr>
+          <td>${r.item}</td>
+          <td>${r.tipo}</td>
+          <td>${r.boss}</td>
+          <td>${r.qtd}</td>
+          <td>
+            <button class="btn btn-secondary" style="padding:3px 8px;font-size:11px;" onclick="editRepoItem(${i})">Editar</button>
+            <button class="btn btn-danger" style="padding:3px 8px;font-size:11px;" onclick="deleteRepoItem(${i})">Excluir</button>
+          </td>
+        </tr>
+      `).join('') || '<tr><td colspan="5">Nenhum item</td></tr>';
+    }
+
+    function editRepoItem(index) {
+      const r = state.repoItems[state.clan][index];
+      document.getElementById('repoItem').value = r.item;
+      document.getElementById('repoType').value = r.tipo;
+      document.getElementById('repoBoss').value = r.boss;
+      document.getElementById('repoQuantity').value = r.qtd;
+      state._editingRepoIndex = index;
     }
 
     function deleteRepoItem(index) {
       state.repoItems[state.clan].splice(index, 1);
       saveState();
       renderRepo();
-      showMessage('✅ Item removido!', 'success');
+      showMessage('✅ Excluído!', 'success');
+    }
+
+    function apagarRepositorio() {
+      if (confirm('Apagar TODO o repositório deste clã?')) {
+        state.repoItems[state.clan] = [];
+        saveState();
+        renderRepo();
+        showMessage('✅ Repositório apagado!', 'success');
+      }
     }
 
     function renderAll() {
@@ -999,9 +1031,10 @@
       renderEvents();
       renderDeliveries();
       renderRepo();
+      fillEventNickOptions();
     }
 
-    window.addEventListener('load', loadState);
+    window.onload = loadState;
   </script>
 </body>
 </html>
