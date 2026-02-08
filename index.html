@@ -6,71 +6,253 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: Poppins, sans-serif; background: #f0f4f8; color: #333; display: flex; min-height: 100vh; }
-    
-    .sidebar { width: 250px; background: #2c3e50; color: white; padding: 20px; position: fixed; height: 100vh; overflow-y: auto; }
-    .sidebar h2 { margin-bottom: 30px; }
-    .clan-btn { width: 100%; padding: 10px; margin: 5px 0; border: none; background: #34495e; color: white; cursor: pointer; border-radius: 4px; font-family: Poppins, sans-serif; font-weight: 600; }
-    .clan-btn.active { background: #e74c3c; }
-    .clan-btn:hover { background: #2980b9; }
-    .sidebar hr { margin: 20px 0; border: none; border-top: 1px solid #555; }
-    .tab-btn { width: 100%; padding: 10px; margin: 5px 0; border: none; background: #34495e; color: white; cursor: pointer; border-radius: 4px; font-family: Poppins, sans-serif; text-align: left; }
-    .tab-btn.active { background: #3498db; font-weight: 600; }
-    .tab-btn:hover { background: #2980b9; }
-    
-    .main { margin-left: 250px; flex: 1; padding: 20px; overflow-y: auto; }
-    .header { background: white; padding: 20px; border-radius: 4px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .header h1 { font-size: 24px; color: #2c3e50; }
-    
-    .card { background: white; padding: 20px; border-radius: 4px; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-    .card h3 { color: #2c3e50; margin-bottom: 8px; font-size: 16px; }
-    .card p { font-size: 12px; color: #7f8c8d; margin-bottom: 15px; }
-    
-    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
-    .btn { padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-family: Poppins, sans-serif; font-weight: 500; transition: all 0.2s; }
-    .btn-primary { background: #3498db; color: white; }
-    .btn-primary:hover { background: #2980b9; transform: translateY(-1px); }
-    .btn-danger { background: #e74c3c; color: white; }
-    .btn-danger:hover { background: #c0392b; }
-    .btn-secondary { background: #95a5a6; color: white; }
-    .btn-secondary:hover { background: #7f8c8d; }
-    
-    .input-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; align-items: flex-end; }
-    .input, select, textarea { padding: 8px 12px; border: 1px solid #bdc3c7; border-radius: 4px; font-family: Poppins, sans-serif; font-size: 12px; }
-    .input { flex: 1; min-width: 150px; }
-    select { flex: 0.5; min-width: 120px; }
-    textarea { width: 100%; min-height: 60px; resize: vertical; }
-    
-    .table-container { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    table thead { background: #ecf0f1; position: sticky; top: 0; }
-    table th, table td { padding: 10px; text-align: left; border-bottom: 1px solid #bdc3c7; }
-    table th { font-weight: 600; }
-    table tbody tr:hover { background: #f8f9fa; }
-    
-    .modal { display: none !important; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; overflow-y: auto; }
-    .modal.active { display: flex !important; align-items: flex-start; justify-content: center; padding-top: 20px; }
-    .modal-content { background: white; padding: 25px; border-radius: 4px; width: 90%; max-width: 500px; margin-bottom: 20px; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .modal-header h2 { font-size: 18px; color: #2c3e50; }
-    .close-btn { background: none; border: none; font-size: 24px; cursor: pointer; color: #7f8c8d; }
-    .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 12px; margin-bottom: 4px; font-weight: 600; color: #2c3e50; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #bdc3c7; border-radius: 4px; font-family: Poppins, sans-serif; font-size: 12px; }
-    .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-    
-    .tab { display: none !important; }
-    .tab.active { display: block !important; }
-    
-    .empty { text-align: center; color: #7f8c8d; padding: 20px; }
-    .success { background: #d4edda; color: #155724; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
-    .error { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
-    
-    @media (max-width: 768px) {
-      .sidebar { width: 100%; height: auto; position: relative; }
-      .main { margin-left: 0; }
-    }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: Poppins, sans-serif;
+    background: #f1f5f9;
+    color: #020617;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    width: 250px;
+    background: #0f172a;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    height: 100vh;
+    overflow-y: auto;
+  }
+  .sidebar h2 { margin-bottom: 30px; font-weight: 600; }
+
+  .clan-btn {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    background: #1e293b;
+    color: white;
+    cursor: pointer;
+    border-radius: 999px;
+    font-family: Poppins, sans-serif;
+    font-weight: 500;
+  }
+  .clan-btn.active { background: #38bdf8; color: #020617; }
+  .clan-btn:hover { background: #0ea5e9; }
+
+  .sidebar hr { margin: 20px 0; border: none; border-top: 1px solid #1f2937; }
+
+  .tab-btn {
+    width: 100%;
+    padding: 10px 14px;
+    margin: 4px 0;
+    border: none;
+    background: transparent;
+    color: #e5e7eb;
+    cursor: pointer;
+    border-radius: 999px;
+    font-family: Poppins, sans-serif;
+    text-align: left;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tab-btn span.icon {
+    width: 22px;
+    text-align: center;
+  }
+  .tab-btn.active {
+    background: #38bdf8;
+    color: #020617;
+    font-weight: 600;
+  }
+  .tab-btn:hover {
+    background: #0ea5e9;
+    color: #020617;
+  }
+
+  .main {
+    margin-left: 250px;
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    background: #e2f3ff;
+  }
+
+  .header {
+    background: #ffffff;
+    padding: 18px 22px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 24px rgba(15,23,42,0.08);
+    color: #020617;
+  }
+  .header h1 { font-size: 22px; color: #020617; display:flex; align-items:center; gap:8px; }
+  .header-sub {
+    color: #6b7280;
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 16px;
+    margin-bottom: 15px;
+    box-shadow: 0 6px 20px rgba(15,23,42,0.06);
+    border: 1px solid #e5e7eb;
+    color: #020617;
+  }
+  .card h3 { color: #020617; margin-bottom: 8px; font-size: 15px; }
+  .card p { font-size: 12px; color: #6b7280; margin-bottom: 12px; }
+
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
+  .btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: Poppins, sans-serif;
+    font-weight: 500;
+    transition: all 0.15s;
+  }
+  .btn-primary { background: #38bdf8; color: #020617; }
+  .btn-primary:hover { background: #0ea5e9; transform: translateY(-1px); }
+  .btn-danger { background: #ef4444; color: white; }
+  .btn-danger:hover { background: #b91c1c; }
+  .btn-secondary { background: #0f172a; color: #e5e7eb; }
+  .btn-secondary:hover { background: #1e293b; }
+
+  .input-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; align-items: flex-end; }
+  .input, select, textarea {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 999px;
+    font-family: Poppins, sans-serif;
+    font-size: 12px;
+    background: #ffffff;
+    color: #020617;
+  }
+  .input { flex: 1; min-width: 150px; }
+  select { flex: 0.5; min-width: 120px; border-radius: 999px; }
+  textarea {
+    width: 100%;
+    min-height: 80px;
+    resize: vertical;
+    border-radius: 18px;
+  }
+  .input::placeholder { color: #9ca3af; }
+
+  .table-container { overflow-x: auto; border-radius: 12px; border: 1px solid #e5e7eb; background:#ffffff; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; color:#020617; }
+  table thead { background: #eff6ff; position: sticky; top: 0; }
+  table th, table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+  table th { font-weight: 600; color:#1e293b; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; }
+  table tbody tr:hover { background: #f9fafb; }
+
+  .modal {
+    display: none !important;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(15,23,42,0.35);
+    z-index: 1000;
+    overflow-y: auto;
+  }
+  .modal.active {
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 20px;
+  }
+  .modal-content {
+    background: #ffffff;
+    padding: 24px 22px;
+    border-radius: 18px;
+    width: 90%;
+    max-width: 480px;
+    margin-bottom: 20px;
+    box-shadow: 0 16px 40px rgba(15,23,42,0.18);
+    border: 1px solid #e5e7eb;
+    color:#020617;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .modal-header h2 { font-size: 17px; color: #020617; }
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 22px;
+    cursor: pointer;
+    color: #6b7280;
+  }
+  .close-btn:hover { color:#020617; }
+
+  .form-group { margin-bottom: 12px; }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 4px;
+    font-weight: 600;
+    color: #0f172a;
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid #cbd5e1;
+    background:#ffffff;
+    color:#020617;
+  }
+  .form-group textarea { border-radius: 16px; }
+
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+
+  .tab { display: none; }
+  .tab.active { display: block; }
+
+  .empty { text-align: center; color: #6b7280; padding: 20px; }
+
+  .success {
+    background: #ecfdf3;
+    color: #166534;
+    padding: 10px;
+    border-radius: 999px;
+    margin-bottom: 15px;
+    border:1px solid #bbf7d0;
+    font-size:12px;
+  }
+  .error {
+    background: #fef2f2;
+    color: #b91c1c;
+    padding: 10px;
+    border-radius: 999px;
+    margin-bottom: 15px;
+    border:1px solid #fecaca;
+    font-size:12px;
+  }
+
+  @media (max-width: 768px) {
+    .sidebar { width: 100%; height: auto; position: relative; }
+    .main { margin-left: 0; }
+  }
   </style>
 </head>
 <body>
@@ -79,83 +261,119 @@
     <button class="clan-btn active" onclick="setClan(1)" data-clan="1">Clan 1</button>
     <button class="clan-btn" onclick="setClan(2)" data-clan="2">Clan 2</button>
     <hr>
-    <button class="tab-btn active" onclick="switchTab('members')" data-tab="members">👥 Membros</button>
-    <button class="tab-btn" onclick="switchTab('events')" data-tab="events">📊 Presença</button>
-    <button class="tab-btn" onclick="switchTab('deliveries')" data-tab="deliveries">📦 Entregas</button>
-    <button class="tab-btn" onclick="switchTab('repo')" data-tab="repo">📂 Repositório</button>
-    <button class="tab-btn" onclick="switchTab('reports')" data-tab="reports">📈 Relatórios</button>
+    <button class="tab-btn active" onclick="switchTab('members')" data-tab="members">
+      <span class="icon">👥</span> Membros
+    </button>
+    <button class="tab-btn" onclick="switchTab('events')" data-tab="events">
+      <span class="icon">📊</span> Presença
+    </button>
+    <button class="tab-btn" onclick="switchTab('deliveries')" data-tab="deliveries">
+      <span class="icon">📦</span> Entregas
+    </button>
+    <button class="tab-btn" onclick="switchTab('repo')" data-tab="repo">
+      <span class="icon">📂</span> Repositório
+    </button>
+    <button class="tab-btn" onclick="switchTab('reports')" data-tab="reports">
+      <span class="icon">📈</span> Relatórios
+    </button>
+    <button class="tab-btn" onclick="switchTab('settings')" data-tab="settings">
+      <span class="icon">⚙️</span> Configurações
+    </button>
   </div>
 
   <div class="main">
     <div class="header">
       <div>
-        <h1 id="pageTitle">👥 Membros</h1>
-        <p style="color: #7f8c8d; font-size: 13px;">Clã <span id="clanDisplay">1</span></p>
+        <h1 id="pageTitle"><span id="pageIcon">👥</span> Membros do clã</h1>
+        <p class="header-sub">Clã <span id="clanDisplay">1</span> • Gerenciamento rápido de membros, presença, entregas e estoque</p>
       </div>
       <button class="btn btn-secondary" onclick="toggleTheme()">🌙 Tema</button>
     </div>
 
-    <div class="card" id="global-actions">
-      <h3>Importar / Exportar dados</h3>
-      <p>Use estes botões para salvar ou carregar todos os dados do painel.</p>
-      <div class="btn-row">
-        <button class="btn btn-secondary" type="button" onclick="clickImportJSON()">📥 Importar JSON</button>
-        <button class="btn btn-primary" type="button" onclick="exportJSON()">📤 Exportar JSON</button>
-        <button class="btn btn-secondary" type="button" onclick="exportPDF()">📤 Exportar PDF</button>
-      </div>
-      <input type="file" id="json-file-input" accept=".json,application/json" style="display:none">
-    </div>
-
     <div id="msgContainer"></div>
 
-    <div class="card">
-      <h3>Webhooks do Discord - Clã <span id="webhookClanDisplay">1</span></h3>
-      <p>Configure webhooks diferentes para cada clã e canal.</p>
-      <div style="margin-bottom: 15px;">
-        <label style="font-size: 12px; font-weight: 600; color: #2c3e50; display: block; margin-bottom: 4px;">Webhook - Membros</label>
-        <div class="input-row">
-          <input id="webhookUrl-members" class="input" placeholder="URL do webhook para membros..." style="flex: 1;">
-          <button class="btn btn-primary" onclick="saveWebhook('members')">✅ Salvar</button>
+    <!-- CONFIGURAÇÕES -->
+    <div class="tab" id="tab-settings">
+      <div class="card">
+        <h3>Configurações gerais</h3>
+        <p>Ajuste integrações e importações. As ações sempre valem para o clã selecionado.</p>
+
+        <div class="card" style="margin-bottom:14px;">
+          <h3>Importar / Exportar dados</h3>
+          <p>Importa membros ou repositório automaticamente, conforme o arquivo.</p>
+          <div class="btn-row">
+            <button class="btn btn-secondary" type="button" onclick="clickImportJSON()">📥 Importar JSON</button>
+            <button class="btn btn-primary" type="button" onclick="exportJSON()">📤 Exportar JSON</button>
+            <button class="btn btn-secondary" type="button" onclick="exportPDF()">🖨️ Exportar PDF da aba atual</button>
+          </div>
+          <input type="file" id="json-file-input" accept=".json,application/json" style="display:none">
         </div>
-      </div>
-      
-      <div style="margin-bottom: 15px;">
-        <label style="font-size: 12px; font-weight: 600; color: #2c3e50; display: block; margin-bottom: 4px;">Webhook - Presença</label>
-        <div class="input-row">
-          <input id="webhookUrl-events" class="input" placeholder="URL do webhook para presença..." style="flex: 1;">
-          <button class="btn btn-primary" onclick="saveWebhook('events')">✅ Salvar</button>
+
+        <div class="card" style="margin-bottom:14px;">
+          <h3>Colar repositório (texto do jogo)</h3>
+          <p>Cole direto aqui a listagem do jogo, como aquele bloco que você me mandou, e converto em itens.</p>
+          <div class="form-group">
+            <label>Texto copiado</label>
+            <textarea id="pasteRepoText" placeholder="Cole aqui o texto do jogo..."></textarea>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" type="button" onclick="parsePastedRepo()">🔄 Converter e salvar</button>
+          </div>
         </div>
-      </div>
-      
-      <div style="margin-bottom: 15px;">
-        <label style="font-size: 12px; font-weight: 600; color: #2c3e50; display: block; margin-bottom: 4px;">Webhook - Entregas</label>
-        <div class="input-row">
-          <input id="webhookUrl-deliveries" class="input" placeholder="URL do webhook para entregas..." style="flex: 1;">
-          <button class="btn btn-primary" onclick="saveWebhook('deliveries')">✅ Salvar</button>
-        </div>
-      </div>
-      
-      <div>
-        <label style="font-size: 12px; font-weight: 600; color: #2c3e50; display: block; margin-bottom: 4px;">Webhook - Repositório</label>
-        <div class="input-row">
-          <input id="webhookUrl-repo" class="input" placeholder="URL do webhook para repositório..." style="flex: 1;">
-          <button class="btn btn-primary" onclick="saveWebhook('repo')">✅ Salvar</button>
+
+        <div class="card">
+          <h3>Webhooks do Discord - Clã <span id="webhookClanDisplay">1</span></h3>
+          <p>Configure webhooks diferentes para cada clã e tipo de relatório.</p>
+
+          <div style="margin-bottom: 15px;">
+            <label style="font-size: 12px; font-weight: 600; color: #0f172a; display: block; margin-bottom: 4px;">Webhook - Membros</label>
+            <div class="input-row">
+              <input id="webhookUrl-members" class="input" placeholder="URL do webhook para membros..." style="flex: 1;">
+              <button class="btn btn-primary" onclick="saveWebhook('members')">Salvar</button>
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 15px;">
+            <label style="font-size: 12px; font-weight: 600; color: #0f172a; display: block; margin-bottom: 4px;">Webhook - Presença</label>
+            <div class="input-row">
+              <input id="webhookUrl-events" class="input" placeholder="URL do webhook para presença..." style="flex: 1;">
+              <button class="btn btn-primary" onclick="saveWebhook('events')">Salvar</button>
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 15px;">
+            <label style="font-size: 12px; font-weight: 600; color: #0f172a; display: block; margin-bottom: 4px;">Webhook - Entregas</label>
+            <div class="input-row">
+              <input id="webhookUrl-deliveries" class="input" placeholder="URL do webhook para entregas..." style="flex: 1;">
+              <button class="btn btn-primary" onclick="saveWebhook('deliveries')">Salvar</button>
+            </div>
+          </div>
+          
+          <div>
+            <label style="font-size: 12px; font-weight: 600; color: #0f172a; display: block; margin-bottom: 4px;">Webhook - Repositório</label>
+            <div class="input-row">
+              <input id="webhookUrl-repo" class="input" placeholder="URL do webhook para repositório..." style="flex: 1;">
+              <button class="btn btn-primary" onclick="saveWebhook('repo')">Salvar</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
+    <!-- Membros -->
     <div class="tab active" id="tab-members">
       <div class="card">
         <h3>Membros do clã</h3>
         <div class="btn-row">
           <button class="btn btn-primary" onclick="openMemberModal()">➕ Novo membro</button>
           <button class="btn btn-danger" onclick="clearAllMembers()">🗑️ Apagar todos</button>
-          <button class="btn btn-secondary" onclick="sendDiscordMembers()">💬 Discord</button>
+          <button class="btn btn-secondary" onclick="sendDiscordMembers()">💬 Enviar para Discord</button>
         </div>
         <div class="input-row">
           <input id="searchMembers" class="input" placeholder="🔍 Buscar nick..." oninput="renderMembers()" style="flex: 1;">
           <select id="filterClass" onchange="renderMembers()">
-            <option value="">Todas as classes</option><option>Arqueira</option><option>Bardo</option><option>Berserker</option><option>Lanceiro</option><option>Maga</option><option>Mago</option>
+            <option value="">Todas as classes</option>
+            <option>Arqueira</option><option>Bardo</option><option>Berserker</option><option>Lanceiro</option><option>Maga</option><option>Mago</option>
           </select>
         </div>
         <div class="table-container">
@@ -169,13 +387,14 @@
       </div>
     </div>
 
+    <!-- Presença -->
     <div class="tab" id="tab-events">
       <div class="card">
         <h3>Presença em eventos</h3>
         <div class="btn-row">
           <button class="btn btn-primary" onclick="openEventModal()">➕ Novo evento</button>
           <button class="btn btn-danger" onclick="clearAllEvents()">🗑️ Apagar tudo</button>
-          <button class="btn btn-secondary" onclick="sendDiscordEvents()">💬 Discord</button>
+          <button class="btn btn-secondary" onclick="sendDiscordEvents()">💬 Enviar para Discord</button>
         </div>
         <div class="input-row">
           <select id="filterEvent" onchange="renderEvents()">
@@ -196,13 +415,14 @@
       </div>
     </div>
 
+    <!-- Entregas -->
     <div class="tab" id="tab-deliveries">
       <div class="card">
         <h3>Entregas do clã</h3>
         <div class="btn-row">
           <button class="btn btn-primary" onclick="openDeliveryModal()">➕ Registrar entrega</button>
           <button class="btn btn-secondary" onclick="showMonthlyReport()">📋 Relatório mensal</button>
-          <button class="btn btn-secondary" onclick="sendDiscordDeliveries()">💬 Discord</button>
+          <button class="btn btn-secondary" onclick="sendDiscordDeliveries()">💬 Enviar para Discord</button>
         </div>
         <div class="input-row">
           <input id="searchDeliveriesNick" class="input" placeholder="🔍 Buscar nick..." oninput="renderDeliveries()" style="flex: 1;">
@@ -213,15 +433,15 @@
         <div class="table-container">
           <table>
             <thead>
-              <tr><th>Data</th><th>Nick</th><th>Classe</th><th>Descrição</th><th>Ações</th></tr>
+              <tr><th>Data</th><th>Nick</th><th>Classe</th><th>Descrição</th><th>Qtd</th><th>Ações</th></tr>
             </thead>
-            <tbody id="deliveries-body"><tr><td colspan="5" class="empty">Carregando...</td></tr></tbody>
+            <tbody id="deliveries-body"><tr><td colspan="6" class="empty">Carregando...</td></tr></tbody>
           </table>
         </div>
         <div class="card" id="monthly-report-card" style="margin-top:14px; display:none;">
           <h3>Relatório mensal</h3>
           <div class="input-row">
-            <input type="month" class="input" id="reportMonth" onchange="renderMonthlyReport()" />
+            <input type="month" class="input" id="reportMonth" onchange="renderMonthlyReport()">
           </div>
           <div class="table-container">
             <table>
@@ -233,73 +453,81 @@
       </div>
     </div>
 
+    <!-- Repositório -->
     <div class="tab" id="tab-repo">
       <div class="card">
         <h3>Repositório</h3>
         <div class="card" style="margin-bottom:10px;">
           <h3>Novo item</h3>
+
           <div class="form-group">
-            <label>Item</label>
-            <input id="repoItem" class="input" placeholder="Nome do item" />
+            <label>Descrição</label>
+            <input id="repoItem" class="input" placeholder="Nome do item">
           </div>
+
           <div class="form-group">
             <label>Tipo</label>
-            <input id="repoType" class="input" placeholder="Tipo" />
+            <input id="repoType" class="input" placeholder="Tipo">
           </div>
+
           <div class="form-group">
-            <label>Boss</label>
-            <input id="repoBoss" class="input" placeholder="Boss" />
+            <label>Boss / origem</label>
+            <input id="repoBoss" class="input" placeholder="Boss / origem">
           </div>
+
           <div class="form-group">
             <label>Quantidade</label>
-            <input id="repoQuantity" class="input" type="number" placeholder="Qtd" />
+            <input id="repoQuantity" class="input" type="number" placeholder="Qtd">
           </div>
+
           <div class="btn-row" style="margin-top:8px;">
             <button class="btn btn-primary" onclick="addRepoItem()">Salvar</button>
           </div>
         </div>
-        <input id="searchRepoItem" class="input" placeholder="🔍 Buscar..." oninput="renderRepo()" style="margin-bottom: 15px;">
+
         <div class="table-container">
           <table>
-            <thead><tr><th>Item</th><th>Tipo</th><th>Boss</th><th>Qtd</th><th>Ações</th></tr></thead>
-            <tbody id="repoTableBody"></tbody>
+            <thead>
+              <tr><th>Item</th><th>Tipo</th><th>Boss</th><th>Qtd</th><th>Ações</th></tr>
+            </thead>
+            <tbody id="repo-body"><tr><td colspan="5" class="empty">Nenhum item</td></tr></tbody>
           </table>
         </div>
-        <div class="card" style="margin-top: 15px;">
-          <div class="btn-row">
-            <button class="btn btn-danger" onclick="apagarRepositorio()">🗑️ Apagar todo repositório</button>
-            <button class="btn btn-secondary" onclick="sendDiscordRepo()">💬 Discord</button>
-          </div>
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn btn-danger" onclick="clearRepo()">🗑️ Limpar repositório</button>
+          <button class="btn btn-secondary" onclick="sendDiscordRepo()">💬 Enviar para Discord</button>
         </div>
       </div>
     </div>
 
+    <!-- Relatórios -->
     <div class="tab" id="tab-reports">
       <div class="card">
         <h3>Relatórios</h3>
-        <p>Resumo por semana</p>
+        <p>Espaço reservado para resumos mais avançados.</p>
       </div>
     </div>
   </div>
 
+  <!-- MODAIS -->
   <div class="modal" id="member-modal">
     <div class="modal-content">
       <div class="modal-header">
         <h2>Membro</h2>
         <button class="close-btn" onclick="closeModal('member-modal')">✕</button>
       </div>
-      <input type="hidden" id="member-index" />
+      <input type="hidden" id="member-index">
       <div class="form-group">
         <label>Nick</label>
-        <input id="member-nick" class="input" />
+        <input id="member-nick" class="input">
       </div>
       <div class="form-group">
         <label>Level</label>
-        <input id="member-level" class="input" type="number" />
+        <input id="member-level" class="input" type="number">
       </div>
       <div class="form-group">
         <label>Power</label>
-        <input id="member-power" class="input" type="number" />
+        <input id="member-power" class="input">
       </div>
       <div class="form-group">
         <label>Classe</label>
@@ -309,7 +537,7 @@
       </div>
       <div class="form-group">
         <label>Data (dd/mm/aaaa)</label>
-        <input id="member-date" class="input" />
+        <input id="member-date" class="input">
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeModal('member-modal')">Cancelar</button>
@@ -324,10 +552,10 @@
         <h2>Evento</h2>
         <button class="close-btn" onclick="closeModal('event-modal')">✕</button>
       </div>
-      <input type="hidden" id="event-index" />
+      <input type="hidden" id="event-index">
       <div class="form-group">
         <label>Data (dd/mm/aaaa)</label>
-        <input id="event-date" class="input" />
+        <input id="event-date" class="input">
       </div>
       <div class="form-group">
         <label>Evento</label>
@@ -347,7 +575,7 @@
       </div>
       <div class="form-group">
         <label>Justificativa</label>
-        <input id="event-just" class="input" />
+        <input id="event-just" class="input">
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeModal('event-modal')">Fechar</button>
@@ -362,14 +590,14 @@
         <h2>Entrega</h2>
         <button class="close-btn" onclick="closeModal('delivery-modal')">✕</button>
       </div>
-      <input type="hidden" id="delivery-index" />
+      <input type="hidden" id="delivery-index">
       <div class="form-group">
         <label>Data (dd/mm/aaaa)</label>
-        <input id="delivery-date" class="input" />
+        <input id="delivery-date" class="input">
       </div>
       <div class="form-group">
         <label>Nick</label>
-        <input id="delivery-nick" class="input" />
+        <select id="delivery-nick" class="input"></select>
       </div>
       <div class="form-group">
         <label>Classe</label>
@@ -379,7 +607,16 @@
       </div>
       <div class="form-group">
         <label>Descrição</label>
-        <input id="delivery-desc" class="input" />
+        <input id="delivery-desc" class="input" list="delivery-items">
+        <datalist id="delivery-items"></datalist>
+      </div>
+      <div class="form-group">
+        <label>Quantidade</label>
+        <input id="delivery-qtd" class="input" type="number" min="1" value="1">
+      </div>
+      <div class="form-group">
+        <label>Observação</label>
+        <input id="delivery-obs" class="input">
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary" onclick="closeModal('delivery-modal')">Cancelar</button>
@@ -390,6 +627,8 @@
 
   <script>
     const STORAGE_KEY = 'murders_painel_v9';
+    const API_BASE = 'http://localhost:3000/api';
+
     let state = {
       clan: 1,
       webhooks: { 
@@ -402,29 +641,8 @@
       repoItems: { 1: [], 2: [] }
     };
 
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          state = JSON.parse(raw);
-        }
-      } catch (e) {
-        console.error('Erro ao carregar:', e);
-      }
-      
-      if (state.webhooks && state.webhooks[state.clan]) {
-        document.getElementById('webhookUrl-members').value = state.webhooks[state.clan].members || '';
-        document.getElementById('webhookUrl-events').value = state.webhooks[state.clan].events || '';
-        document.getElementById('webhookUrl-deliveries').value = state.webhooks[state.clan].deliveries || '';
-        document.getElementById('webhookUrl-repo').value = state.webhooks[state.clan].repo || '';
-      }
-      
-      renderAll();
-    }
-
     function saveState() {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      showMessage('✅ Dados salvos!', 'success');
     }
 
     function showMessage(msg, type = 'success') {
@@ -448,9 +666,73 @@
       return `${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}/${y}`;
     }
 
+    function toBRDayMonthFromISO(isoDate) {
+      if (!isoDate) return '';
+      const d = new Date(isoDate);
+      if (Number.isNaN(d.getTime())) return '';
+      const dia = String(d.getDate()).padStart(2,'0');
+      const mes = String(d.getMonth() + 1).padStart(2,'0');
+      return `${dia}/${mes}`;
+    }
+
     function todayBR() {
       const now = new Date();
       return `${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+    }
+
+    async function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const saved = JSON.parse(raw);
+          if (saved.webhooks) state.webhooks = saved.webhooks;
+          if (saved.clan) state.clan = saved.clan;
+          if (saved.members) state.members = saved.members;
+          if (saved.events) state.events = saved.events;
+          if (saved.deliveries) state.deliveries = saved.deliveries;
+          if (saved.repoItems) state.repoItems = saved.repoItems;
+        }
+      } catch (e) {
+        console.error('Erro ao carregar localStorage:', e);
+      }
+
+      document.getElementById('clanDisplay').textContent = state.clan;
+      document.getElementById('webhookClanDisplay').textContent = state.clan;
+
+      if (state.webhooks && state.webhooks[state.clan]) {
+        document.getElementById('webhookUrl-members').value = state.webhooks[state.clan].members || '';
+        document.getElementById('webhookUrl-events').value = state.webhooks[state.clan].events || '';
+        document.getElementById('webhookUrl-deliveries').value = state.webhooks[state.clan].deliveries || '';
+        document.getElementById('webhookUrl-repo').value = state.webhooks[state.clan].repo || '';
+      }
+
+      await loadAllFromAPI();
+    }
+
+    async function loadAllFromAPI() {
+      await Promise.all([
+        loadMembersFromAPI(),
+      ]);
+      renderEvents();
+      renderDeliveries();
+      renderRepo();
+      fillDeliveryItemOptions();
+    }
+
+    async function loadMembersFromAPI() {
+      try {
+        const res = await fetch(`${API_BASE}/members?clan=${state.clan}`);
+        if (!res.ok) throw new Error('Erro ao carregar membros');
+        const data = await res.json();
+        state.members[state.clan] = data;
+        renderMembers();
+        fillEventNickOptions();
+        fillDeliveryNickOptions();
+        fillDeliveryItemOptions();
+      } catch (err) {
+        console.error(err);
+        showMessage('❌ Erro ao carregar membros da API', 'error');
+      }
     }
 
     function setClan(clan) {
@@ -468,7 +750,7 @@
         document.getElementById('webhookUrl-repo').value = state.webhooks[clan].repo || '';
       }
       
-      renderAll();
+      loadAllFromAPI();
     }
 
     function switchTab(tab) {
@@ -476,13 +758,33 @@
         btn.classList.toggle('active', btn.dataset.tab === tab);
       });
       document.querySelectorAll('.tab').forEach(sec => {
-        sec.classList.toggle('active', sec.id === 'tab-' + tab);
+        const isActive = sec.id === 'tab-' + tab;
+        sec.classList.toggle('active', isActive);
+        sec.style.display = isActive ? 'block' : 'none';
       });
+
+      const titles = {
+        members: { icon:'👥', text:'Membros' },
+        events: { icon:'📊', text:'Presença' },
+        deliveries: { icon:'📦', text:'Entregas' },
+        repo: { icon:'📂', text:'Repositório' },
+        reports: { icon:'📈', text:'Relatórios' },
+        settings: { icon:'⚙️', text:'Configurações' }
+      };
+      const info = titles[tab] || { icon:'👥', text:'Painel' };
+      document.getElementById('pageTitle').innerHTML = `<span id="pageIcon">${info.icon}</span> ${info.text} do clã`;
     }
 
     function toggleTheme() {
-      document.body.style.background = document.body.style.background === 'rgb(30, 30, 30)' ? '#f0f4f8' : '#1e1e1e';
-      document.body.style.color = document.body.style.color === 'rgb(255, 255, 255)' ? '#333' : '#fff';
+      const current = document.body.dataset.theme || 'light';
+      const next = current === 'light' ? 'dark' : 'light';
+      document.body.dataset.theme = next;
+
+      if (next === 'dark') {
+        document.body.style.background = '#0f172a';
+      } else {
+        document.body.style.background = '#f1f5f9';
+      }
     }
 
     function saveWebhook(type) {
@@ -490,9 +792,26 @@
       if (!state.webhooks[state.clan]) state.webhooks[state.clan] = {};
       state.webhooks[state.clan][type] = value;
       saveState();
+      showMessage('✅ Webhook salvo!', 'success');
     }
 
-    // --------- ENVIO PARA DISCORD COM EMBEDS ---------
+    function enviarDiscord(webhookUrl, payload) {
+      fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => {
+        if (res.ok) {
+          showMessage('✅ Enviado para Discord!', 'success');
+        } else {
+          showMessage('❌ Erro: ' + res.status, 'error');
+        }
+      })
+      .catch(() => {
+        showMessage('❌ Erro na conexão', 'error');
+      });
+    }
 
     function sendDiscordMembers() {
       const url = state.webhooks[state.clan]?.members;
@@ -503,7 +822,7 @@
         members.length === 0
           ? "_Nenhum membro registrado._"
           : members
-              .map(m => `• **${m.nick}** — Nível ${m.level} | Power ${m.power} | Classe: ${m.classe}`)
+              .map(m => `• **${m.nick}** — Nível ${m.level ?? ''} | Power ${m.power != null ? Number(m.power).toLocaleString('pt-BR') : ''} | Classe: ${m.classe ?? ''}`)
               .join("\n");
 
       const payload = {
@@ -555,9 +874,9 @@
       const deliveries = state.deliveries[state.clan] || [];
       const description =
         deliveries.length === 0
-          ? "_Nenhuma entrega registrado._"
+          ? "_Nenhuma entrega registrada._"
           : deliveries
-              .map(d => `• **${d.nick}** (${d.classe}) — ${d.descricao}`)
+              .map(d => `• **${d.nick}** (${d.classe}) — ${d.descricao} (x${d.qtd || 1})`)
               .join("\n");
 
       const payload = {
@@ -596,93 +915,6 @@
       enviarDiscord(url, payload);
     }
 
-    // --------- FORMATADORES DE TEXTO (mantidos) ---------
-
-    function formatMembrosMessage() {
-      let msg = `**👥 MEMBROS - CLAN ${state.clan}**\n\n`;
-      const members = state.members[state.clan] || [];
-      if (members.length === 0) {
-        msg += 'Nenhum membro registrado';
-      } else {
-        members.forEach(m => {
-          msg += `**${m.nick}** - Nível: ${m.level} | Power: ${m.power} | ${m.classe}\n`;
-        });
-      }
-      return msg;
-    }
-
-    function formatMembersMessage() {
-      let msg = `**👥 MEMBROS - CLAN ${state.clan}**\n\n`;
-      const members = state.members[state.clan] || [];
-      if (members.length === 0) {
-        msg += 'Nenhum membro registrado';
-      } else {
-        members.forEach(m => {
-          msg += `**${m.nick}** - Nível: ${m.level} | Power: ${m.power} | ${m.classe}\n`;
-        });
-      }
-      return msg;
-    }
-
-    function formatEventsMessage() {
-      let msg = `**📊 PRESENÇA - CLAN ${state.clan}**\n\n`;
-      const events = state.events[state.clan] || [];
-      if (events.length === 0) {
-        msg += 'Nenhum evento registrado';
-      } else {
-        events.forEach(e => {
-          msg += `**${e.nick}** - ${e.evento} | Status: ${e.status}\n`;
-        });
-      }
-      return msg;
-    }
-
-    function formatDeliveriesMessage() {
-      let msg = `**📦 ENTREGAS - CLAN ${state.clan}**\n\n`;
-      const deliveries = state.deliveries[state.clan] || [];
-      if (deliveries.length === 0) {
-        msg += 'Nenhuma entrega registrada';
-      } else {
-        deliveries.forEach(d => {
-          msg += `**${d.nick}** (${d.classe}) - ${d.descricao}\n`;
-        });
-      }
-      return msg;
-    }
-
-    function formatRepoMessage() {
-      let msg = `**📂 REPOSITÓRIO - CLAN ${state.clan}**\n\n`;
-      const items = state.repoItems[state.clan] || [];
-      if (items.length === 0) {
-        msg += 'Nenhum item no repositório';
-      } else {
-        items.forEach(r => {
-          msg += `**${r.item}** - Qtd: ${r.qtd} | Boss: ${r.boss}\n`;
-        });
-      }
-      return msg;
-    }
-
-    // --------- ENVIAR DISCORD (AGORA RECEBE PAYLOAD DE EMBED) ---------
-
-    function enviarDiscord(webhookUrl, payload) {
-      fetch(webhookUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      .then(res => {
-        if (res.ok) {
-          showMessage('✅ Enviado para Discord!', 'success');
-        } else {
-          showMessage('❌ Erro: ' + res.status, 'error');
-        }
-      })
-      .catch(err => {
-        showMessage('❌ Erro na conexão', 'error');
-      });
-    }
-
     function clickImportJSON() {
       document.getElementById('json-file-input').onchange = handleJSONFile;
       document.getElementById('json-file-input').click();
@@ -697,44 +929,58 @@
           const imported = JSON.parse(e.target.result);
           
           if (Array.isArray(imported) && imported.length > 0) {
-            if (imported[0].nome !== undefined && (imported[0].quantidade !== undefined || imported[0].origem !== undefined)) {
-              const repoItems = imported.map(item => ({
-                item: item.nome || '',
-                tipo: '',
-                boss: item.origem || '',
-                qtd: parseInt(item.quantidade) || 0
-              }));
-              state.repoItems[state.clan] = repoItems;
-              saveState();
-              renderRepo();
-              showMessage(`✅ ${repoItems.length} itens importados!`, 'success');
-              return;
-            }
+  if (imported[0].nick !== undefined && imported[0].nome === undefined) {
+    state.members[state.clan] = imported;
+    saveState();
+    renderMembers();
+    fillEventNickOptions();
+    fillDeliveryNickOptions();
+    showMessage(`✅ ${imported.length} membros importados!`, 'success');
+    return;
+  }
+}
+
             
             if (imported[0].nick !== undefined && imported[0].nome === undefined) {
               state.members[state.clan] = imported;
               saveState();
               renderMembers();
+              fillEventNickOptions();
+              fillDeliveryNickOptions();
               showMessage(`✅ ${imported.length} membros importados!`, 'success');
               return;
             }
-          }
+          
           
           if (imported.repoItems && Array.isArray(imported.repoItems)) {
             state.repoItems[state.clan] = imported.repoItems;
             saveState();
             renderRepo();
+            fillDeliveryItemOptions();
             showMessage(`✅ ${imported.repoItems.length} itens importados!`, 'success');
             return;
           }
           
           if (imported.members && imported.events && imported.deliveries && imported.repoItems) {
-            state = imported;
-            saveState();
-            renderAll();
-            showMessage('✅ Dados completos importados!', 'success');
-            return;
-          }
+  // mescla por clã, não joga fora o outro
+  if (imported.members[1]) state.members[1] = imported.members[1];
+  if (imported.members[2]) state.members[2] = imported.members[2];
+
+  if (imported.events[1]) state.events[1] = imported.events[1];
+  if (imported.events[2]) state.events[2] = imported.events[2];
+
+  if (imported.deliveries[1]) state.deliveries[1] = imported.deliveries[1];
+  if (imported.deliveries[2]) state.deliveries[2] = imported.deliveries[2];
+
+  if (imported.repoItems[1]) state.repoItems[1] = imported.repoItems[1];
+  if (imported.repoItems[2]) state.repoItems[2] = imported.repoItems[2];
+
+  saveState();
+  renderAll();
+  showMessage('✅ Dados importados e mesclados por clã!', 'success');
+  return;
+}
+
           
           showMessage('❌ Formato de arquivo não reconhecido!', 'error');
         } catch (err) {
@@ -768,13 +1014,132 @@
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
+    // PARSE do texto do jogo para repositório
+    function parsePastedRepo() {
+      const raw = (document.getElementById('pasteRepoText').value || '').trim();
+      if (!raw) {
+        showMessage('❌ Cole o texto do repositório primeiro', 'error');
+        return;
+      }
+
+      const lines = raw.split('\n')
+        .map(l => l.trim())
+        .filter(l => l);
+
+      if (!lines.length) {
+        showMessage('❌ Não encontrei linhas válidas', 'error');
+        return;
+      }
+
+      const repo = [];
+
+      for (const line of lines) {
+        // formato: NOMEITEMQTDORIGEMDATA...
+        // Ex: "Polidor Avançado1Santuário da União - Baú..."
+        // separamos em: [nome+quantidade] + [origem+data]
+        const matchMain = line.match(/^(.*?)(\d+)(Santuário da União.*)$/);
+        if (!matchMain) continue;
+
+        const nomeBruto = matchMain[1].trim();
+        const qtd = parseInt(matchMain[2], 10) || 0;
+        const origemData = matchMain[3].trim();
+
+        // origem = até começar o ano 20xx
+        const origemMatch = origemData.match(/^(.*?)(20\d{2}\.\d{2}\.\d{2}.*)$/);
+        const origem = origemMatch ? origemMatch[1].trim() : origemData;
+
+        if (!nomeBruto || !qtd) continue;
+
+        const existing = repo.find(r =>
+          r.item.toLowerCase() === nomeBruto.toLowerCase() &&
+          r.boss === origem
+        );
+        if (existing) {
+          existing.qtd += qtd;
+        } else {
+          repo.push({ item: nomeBruto, tipo: '', boss: origem, qtd });
+        }
+      }
+
+      if (!repo.length) {
+        showMessage('❌ Não consegui interpretar nenhum item', 'error');
+        return;
+      }
+
+      state.repoItems[state.clan] = repo;
+      saveState();
+      renderRepo();
+      fillDeliveryItemOptions();
+      showMessage(`✅ ${repo.length} itens carregados a partir do texto!`, 'success');
+    }
+
+    // Membros
+    async function saveMember() {
+      const idx = document.getElementById('member-index').value;
+      const nick = document.getElementById('member-nick').value.trim();
+      if (!nick) { showMessage('❌ Nick obrigatório', 'error'); return; }
+
+      const levelStr = document.getElementById('member-level').value.trim();
+      const powerStr = document.getElementById('member-power').value.trim();
+
+      const record = {
+        clan: state.clan,
+        nick,
+        level: levelStr ? parseInt(levelStr, 10) : null,
+        power: powerStr ? parseInt(powerStr.replace(/\./g, ''), 10) : null,
+        classe: document.getElementById('member-class').value,
+        data: toISOFromBR(document.getElementById('member-date').value)
+      };
+
+      try {
+        let saved;
+        const currentList = state.members[state.clan] || [];
+
+        if (idx !== '') {
+          const existing = currentList[idx];
+          if (!existing || !existing.id) {
+            showMessage('❌ Registro sem id, recarregue a página', 'error');
+            return;
+          }
+          const res = await fetch(`${API_BASE}/members/${existing.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record)
+          });
+          if (!res.ok) throw new Error('Erro ao atualizar membro');
+          saved = await res.json();
+          currentList[idx] = saved;
+        } else {
+          const res = await fetch(`${API_BASE}/members`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record)
+          });
+          if (!res.ok) throw new Error('Erro ao criar membro');
+          saved = await res.json();
+          currentList.push(saved);
+        }
+
+        state.members[state.clan] = currentList;
+        closeModal('member-modal');
+        renderMembers();
+        fillEventNickOptions();
+        fillDeliveryNickOptions();
+        fillDeliveryItemOptions();
+        showMessage('✅ Salvo!', 'success');
+      } catch (err) {
+        console.error(err);
+        showMessage('❌ Erro ao salvar membro na API', 'error');
+      }
+    }
+
     function openMemberModal(index = null) {
       document.getElementById('member-index').value = index !== null ? index : '';
       if (index !== null && index !== '') {
         const m = state.members[state.clan][index];
         document.getElementById('member-nick').value = m.nick;
         document.getElementById('member-level').value = m.level || '';
-        document.getElementById('member-power').value = m.power || '';
+        document.getElementById('member-power').value = m.power != null ? Number(m.power).toLocaleString('pt-BR') : '';
         document.getElementById('member-class').value = m.classe || 'Arqueira';
         document.getElementById('member-date').value = toBRFromISO(m.data) || todayBR();
       } else {
@@ -787,102 +1152,184 @@
       openModal('member-modal');
     }
 
-    function saveMember() {
-      const idx = document.getElementById('member-index').value;
-      const nick = document.getElementById('member-nick').value.trim();
-      if (!nick) { showMessage('❌ Nick obrigatório', 'error'); return; }
-      const record = {
-        nick,
-        level: document.getElementById('member-level').value.trim(),
-        power: document.getElementById('member-power').value.trim(),
-        classe: document.getElementById('member-class').value,
-        data: toISOFromBR(document.getElementById('member-date').value)
-      };
-      if (idx !== '') state.members[state.clan][parseInt(idx)] = record;
-      else state.members[state.clan].push(record);
-      saveState();
-      closeModal('member-modal');
-      renderMembers();
-      fillEventNickOptions();
-    }
+    async function deleteMember(index) {
+  const list = state.members[state.clan] || [];
+  const item = list[index];
+  if (!item) {
+    showMessage('❌ Membro não encontrado na lista', 'error');
+    return;
+  }
 
-    function deleteMember(index) {
-      state.members[state.clan].splice(index, 1);
-      saveState();
-      renderMembers();
-      fillEventNickOptions();
-      showMessage('✅ Excluído!', 'success');
+  if (!confirm(`Excluir membro ${item.nick}?`)) return;
+
+  // se veio da API e tem id, tenta apagar na API
+  if (item.id) {
+    try {
+      const res = await fetch(`${API_BASE}/members/${item.id}`, {
+        method: 'DELETE'
+      });
+      if (!res.ok && res.status !== 204) {
+        throw new Error('Erro ao excluir membro');
+      }
+    } catch (err) {
+      console.error(err);
+      showMessage('❌ Erro ao excluir membro na API (removido só localmente)', 'error');
+      // mesmo com erro na API, segue removendo local
+    }
+  }
+
+  // remove sempre do state/localStorage
+  list.splice(index, 1);
+  state.members[state.clan] = list;
+  renderMembers();
+  fillEventNickOptions();
+  fillDeliveryNickOptions();
+  fillDeliveryItemOptions();
+  saveState();
+  showMessage('✅ Excluído!', 'success');
+}
+
+
+    async function clearAllMembers() {
+      if (!confirm('Apagar TODOS os membros do clã atual?')) return;
+
+      try {
+        const res = await fetch(`${API_BASE}/members?clan=${state.clan}`, {
+          method: 'DELETE'
+        });
+        if (!res.ok && res.status !== 204) throw new Error('Erro ao apagar membros');
+
+        state.members[state.clan] = [];
+        renderMembers();
+        fillEventNickOptions();
+        fillDeliveryNickOptions();
+        fillDeliveryItemOptions();
+        showMessage('✅ Apagado!', 'success');
+      } catch (err) {
+        console.error(err);
+        showMessage('❌ Erro ao apagar membros na API', 'error');
+      }
     }
 
     function renderMembers() {
-      const body = document.getElementById('members-body');
-      let list = [...(state.members[state.clan] || [])];
-      const search = (document.getElementById('searchMembers')?.value || '').toLowerCase();
-      const filterClass = document.getElementById('filterClass')?.value || '';
-      if (search) list = list.filter(m => (m.nick || '').toLowerCase().includes(search));
-      if (filterClass) list = list.filter(m => m.classe === filterClass);
-      list.sort((a, b) => (a.nick || '').localeCompare(b.nick || '', 'pt-BR'));
-      body.innerHTML = list.map((m, i) => `
-        <tr>
-          <td>${m.nick}</td><td>${m.level}</td><td>${m.power}</td><td>${m.classe}</td><td>${toBRFromISO(m.data)}</td>
-          <td>
-            <button class="btn btn-secondary" style="padding:3px 8px;font-size:11px;" onclick="openMemberModal(${i})">Editar</button>
-            <button class="btn btn-danger" style="padding:3px 8px;font-size:11px;" onclick="deleteMember(${i})">Excluir</button>
-          </td>
-        </tr>
-      `).join('') || '<tr><td colspan="6">Nenhum</td></tr>';
-    }
+  const body = document.getElementById('members-body');
+  const all = state.members[state.clan] || [];
 
-    function clearAllMembers() {
-      if (confirm('Apagar TODOS os membros?')) {
-        state.members[state.clan] = [];
-        saveState();
-        renderMembers();
-        fillEventNickOptions();
-        showMessage('✅ Apagado!', 'success');
-      }
-    }
+  const search = (document.getElementById('searchMembers')?.value || '').toLowerCase();
+  const filterClass = document.getElementById('filterClass')?.value || '';
+
+  // monta lista com índice REAL
+  let list = all.map((m, idx) => ({ ...m, _idx: idx }));
+
+  if (search) {
+    list = list.filter(m => (m.nick || '').toLowerCase().includes(search));
+  }
+  if (filterClass) {
+    list = list.filter(m => m.classe === filterClass);
+  }
+
+  // ordena só a visão, mantendo _idx
+  list.sort((a, b) => (a.nick || '').localeCompare(b.nick || '', 'pt-BR'));
+
+  body.innerHTML = list.map(m => `
+    <tr>
+      <td>${m.nick}</td>
+      <td>${m.level ?? ''}</td>
+      <td>${m.power != null ? Number(m.power).toLocaleString('pt-BR') : ''}</td>
+      <td>${m.classe ?? ''}</td>
+      <td>${toBRDayMonthFromISO(m.data)}</td>
+      <td>
+        <button class="btn btn-secondary" style="padding:3px 8px;font-size:11px;"
+                onclick="openMemberModal(${m._idx})">Editar</button>
+        <button class="btn btn-danger" style="padding:3px 8px;font-size:11px;"
+                onclick="deleteMember(${m._idx})">Excluir</button>
+      </td>
+    </tr>
+  `).join('') || '<tr><td colspan="6">Nenhum</td></tr>';
+}
+
 
     function fillEventNickOptions() {
       const select = document.getElementById('event-nick');
       if (select) {
         select.innerHTML = '<option>-- Selecione --</option>' + (state.members[state.clan] || [])
-          .sort((a, b) => a.nick.localeCompare(b.nick, 'pt-BR'))
+          .slice()
+          .sort((a, b) => (a.nick || '').localeCompare(b.nick || '', 'pt-BR'))
           .map(m => `<option>${m.nick}</option>`).join('');
       }
     }
 
-    function openEventModal(index = null) {
-      document.getElementById('event-index').value = index !== null ? index : '';
-      if (index !== null && index !== '') {
-        const e = state.events[state.clan][index];
-        document.getElementById('event-date').value = toBRFromISO(e.data);
-        document.getElementById('event-name').value = e.evento;
-        document.getElementById('event-status').value = e.status;
-        document.getElementById('event-just').value = e.justificativa || '';
-      } else {
-        document.getElementById('event-date').value = todayBR();
-        document.getElementById('event-name').value = 'Boss do clã';
-        document.getElementById('event-status').value = 'Presente';
-        document.getElementById('event-just').value = '';
+    function fillDeliveryNickOptions() {
+      const select = document.getElementById('delivery-nick');
+      if (select) {
+        select.innerHTML = '<option>-- Selecione --</option>' +
+          (state.members[state.clan] || [])
+            .slice()
+            .sort((a, b) => (a.nick || '').localeCompare(b.nick || '', 'pt-BR'))
+            .map(m => `<option>${m.nick}</option>`)
+            .join('');
       }
-      fillEventNickOptions();
+    }
+
+    function fillDeliveryItemOptions() {
+      const listEl = document.getElementById('delivery-items');
+      if (!listEl) return;
+
+      const items = (state.repoItems[state.clan] || [])
+        .slice()
+        .sort((a, b) => (a.item || '').localeCompare(b.item || '', 'pt-BR'));
+
+      listEl.innerHTML = items
+        .map(r => `<option value="${r.item}"></option>`)
+        .join('');
+    }
+
+    // Eventos
+    function openEventModal(index = null) {
+      document.getElementById('event-index').value = index != null ? index : '';
+
+      if (index != null && index !== '') {
+        const e = state.events[state.clan][index];
+        document.getElementById('event-date').value  = toBRFromISO(e.data);
+        document.getElementById('event-name').value  = e.evento;
+        document.getElementById('event-status').value = e.status;
+        document.getElementById('event-just').value  = e.justificativa || '';
+        fillEventNickOptions();
+        document.getElementById('event-nick').value  = e.nick;
+      } else {
+        document.getElementById('event-date').value  = todayBR();
+        document.getElementById('event-name').value  = 'Boss do clã';
+        document.getElementById('event-status').value = 'Presente';
+        document.getElementById('event-just').value  = '';
+        fillEventNickOptions();
+        document.getElementById('event-nick').value  = '';
+      }
+
       openModal('event-modal');
     }
 
     function saveEvent() {
-      const idx = document.getElementById('event-index').value;
+      const idx  = document.getElementById('event-index').value;
       const nick = document.getElementById('event-nick').value;
-      if (!nick) { showMessage('❌ Nick obrigatório', 'error'); return; }
+      if (!nick) {
+        showMessage('❌ Nick obrigatório', 'error');
+        return;
+      }
+
       const record = {
-        data: toISOFromBR(document.getElementById('event-date').value),
+        data:  toISOFromBR(document.getElementById('event-date').value),
         evento: document.getElementById('event-name').value,
         nick,
         status: document.getElementById('event-status').value,
         justificativa: document.getElementById('event-just').value
       };
-      if (idx !== '') state.events[state.clan][parseInt(idx)] = record;
-      else state.events[state.clan].push(record);
+
+      if (idx !== '') {
+        state.events[state.clan][parseInt(idx, 10)] = record;
+      } else {
+        state.events[state.clan].push(record);
+      }
+
       saveState();
       renderEvents();
       closeModal('event-modal');
@@ -896,19 +1343,31 @@
       showMessage('✅ Excluído!', 'success');
     }
 
+    function clearAllEvents() {
+      if (!confirm('Apagar TODOS os eventos?')) return;
+      state.events[state.clan] = [];
+      saveState();
+      renderEvents();
+      showMessage('✅ Apagado!', 'success');
+    }
+
     function renderEvents() {
       const body = document.getElementById('events-body');
       let list = [...(state.events[state.clan] || [])];
+
       const filterEvent = document.getElementById('filterEvent')?.value || '';
       const filterStatus = document.getElementById('filterStatus')?.value || '';
+
       if (filterEvent) list = list.filter(e => e.evento === filterEvent);
       if (filterStatus) list = list.filter(e => e.status === filterStatus);
-      list.sort((a, b) => (a.data || '').localeCompare(b.data || ''));
+
       body.innerHTML = list.map((e, i) => `
         <tr>
-          <td>${toBRFromISO(e.data)}</td><td><strong>${e.nick}</strong></td><td>${e.evento}</td>
-          <td><strong style="color: ${e.status === 'Presente' ? '#27ae60' : e.status === 'Faltou' ? '#e74c3c' : '#f39c12'}">${e.status}</strong></td>
-          <td>${e.justificativa || '-'}</td>
+          <td>${toBRDayMonthFromISO(e.data)}</td>
+          <td>${e.nick}</td>
+          <td>${e.evento}</td>
+          <td>${e.status}</td>
+          <td>${e.justificativa || ''}</td>
           <td>
             <button class="btn btn-secondary" style="padding:3px 8px;font-size:11px;" onclick="openEventModal(${i})">Editar</button>
             <button class="btn btn-danger" style="padding:3px 8px;font-size:11px;" onclick="deleteEvent(${i})">Excluir</button>
@@ -917,43 +1376,79 @@
       `).join('') || '<tr><td colspan="6">Nenhum</td></tr>';
     }
 
-    function clearAllEvents() {
-      if (confirm('Apagar TODOS os eventos?')) {
-        state.events[state.clan] = [];
-        saveState();
-        renderEvents();
-        showMessage('✅ Apagado!', 'success');
-      }
-    }
-
+    // Entregas
     function openDeliveryModal(index = null) {
-      document.getElementById('delivery-index').value = index !== null ? index : '';
-      if (index !== null && index !== '') {
+      document.getElementById('delivery-index').value = index != null ? index : '';
+      fillDeliveryNickOptions();
+      fillDeliveryItemOptions();
+
+      if (index != null && index !== '') {
         const d = state.deliveries[state.clan][index];
-        document.getElementById('delivery-date').value = toBRFromISO(d.data);
-        document.getElementById('delivery-nick').value = d.nick;
+        document.getElementById('delivery-date').value  = toBRFromISO(d.data);
+        document.getElementById('delivery-nick').value  = d.nick;
         document.getElementById('delivery-class').value = d.classe;
-        document.getElementById('delivery-desc').value = d.descricao || '';
+        document.getElementById('delivery-desc').value  = d.descricao;
+        document.getElementById('delivery-qtd').value   = d.qtd || 1;
+        document.getElementById('delivery-obs').value   = d.obs || '';
       } else {
-        document.getElementById('delivery-date').value = todayBR();
-        document.getElementById('delivery-nick').value = '';
+        document.getElementById('delivery-date').value  = todayBR();
+        document.getElementById('delivery-nick').value  = '';
         document.getElementById('delivery-class').value = 'Arqueira';
-        document.getElementById('delivery-desc').value = '';
+        document.getElementById('delivery-desc').value  = '';
+        document.getElementById('delivery-qtd').value   = 1;
+        document.getElementById('delivery-obs').value   = '';
       }
+
       openModal('delivery-modal');
     }
 
     function saveDelivery() {
-      const idx = document.getElementById('delivery-index').value;
-      const nick = document.getElementById('delivery-nick').value.trim();
-      const desc = document.getElementById('delivery-desc').value.trim();
-      if (!nick || !desc) { showMessage('❌ Campos obrigatórios', 'error'); return; }
+      const idx   = document.getElementById('delivery-index').value;
+      const date  = document.getElementById('delivery-date').value;
+      const nick  = document.getElementById('delivery-nick').value;
+      const classe = document.getElementById('delivery-class').value;
+      const desc  = document.getElementById('delivery-desc').value.trim();
+      const qtdStr = document.getElementById('delivery-qtd').value;
+      const obs   = document.getElementById('delivery-obs').value.trim();
+
+      if (!date || !nick || !desc || !qtdStr) {
+        showMessage('❌ Data, Nick, Descrição e Quantidade são obrigatórios', 'error');
+        return;
+      }
+
+      const qtd = parseInt(qtdStr, 10);
+      if (isNaN(qtd) || qtd <= 0) {
+        showMessage('❌ Quantidade inválida', 'error');
+        return;
+      }
+
       const record = {
-        data: toISOFromBR(document.getElementById('delivery-date').value),
-        nick, classe: document.getElementById('delivery-class').value, descricao: desc
+        data: toISOFromBR(date),
+        nick,
+        classe,
+        descricao: desc,
+        qtd,
+        obs
       };
-      if (idx !== '') state.deliveries[state.clan][parseInt(idx)] = record;
-      else state.deliveries[state.clan].push(record);
+
+      const repoList = state.repoItems[state.clan] || [];
+      const repoIndex = repoList.findIndex(r => r.item === record.descricao);
+      if (repoIndex !== -1) {
+        repoList[repoIndex].qtd = (repoList[repoIndex].qtd || 0) - qtd;
+        if (repoList[repoIndex].qtd <= 0) {
+          repoList.splice(repoIndex, 1);
+        }
+        state.repoItems[state.clan] = repoList;
+        renderRepo();
+        fillDeliveryItemOptions();
+      }
+
+      if (idx !== '') {
+        state.deliveries[state.clan][parseInt(idx, 10)] = record;
+      } else {
+        state.deliveries[state.clan].push(record);
+      }
+
       saveState();
       closeModal('delivery-modal');
       renderDeliveries();
@@ -961,6 +1456,7 @@
     }
 
     function deleteDelivery(index) {
+      if (!confirm('Excluir esta entrega?')) return;
       state.deliveries[state.clan].splice(index, 1);
       saveState();
       renderDeliveries();
@@ -970,35 +1466,31 @@
     function renderDeliveries() {
       const body = document.getElementById('deliveries-body');
       let list = [...(state.deliveries[state.clan] || [])];
-      const search = (document.getElementById('searchDeliveriesNick')?.value || '').toLowerCase();
+
+      const searchNick = (document.getElementById('searchDeliveriesNick')?.value || '').toLowerCase();
       const filterClass = document.getElementById('filterDeliveriesClass')?.value || '';
-      if (search) list = list.filter(d => d.nick.toLowerCase().includes(search));
+
+      if (searchNick) list = list.filter(d => (d.nick || '').toLowerCase().includes(searchNick));
       if (filterClass) list = list.filter(d => d.classe === filterClass);
-      list = list.map((d, idx) => ({ ...d, _idx: idx }));
-      list.sort((a, b) => a.nick.localeCompare(b.nick, 'pt-BR'));
-      body.innerHTML = list.map((d) => `
+
+      body.innerHTML = list.map((d, i) => `
         <tr>
-          <td>${toBRFromISO(d.data)}</td><td>${d.nick}</td><td>${d.classe}</td><td>${d.descricao}</td>
+          <td>${toBRDayMonthFromISO(d.data)}</td>
+          <td>${d.nick}</td>
+          <td>${d.classe}</td>
+          <td>${d.descricao}</td>
+          <td>${d.qtd || ''}</td>
           <td>
-            <button class="btn btn-secondary" style="padding:3px 8px;font-size:11px;" onclick="openDeliveryModal(${d._idx})">Editar</button>
-            <button class="btn btn-danger" style="padding:3px 8px;font-size:11px;" onclick="deleteDelivery(${d._idx})">Excluir</button>
+            <button class="btn btn-secondary" style="padding:3px 8px;font-size:11px;" onclick="openDeliveryModal(${i})">Editar</button>
+            <button class="btn btn-danger" style="padding:3px 8px;font-size:11px;" onclick="deleteDelivery(${i})">Excluir</button>
           </td>
         </tr>
-      `).join('') || '<tr><td colspan="5">Nenhum</td></tr>';
-    }
-
-    function clearAllDeliveries() {
-      if (confirm('Apagar TODAS as entregas?')) {
-        state.deliveries[state.clan] = [];
-        saveState();
-        renderDeliveries();
-        showMessage('✅ Apagado!', 'success');
-      }
+      `).join('') || '<tr><td colspan="6">Nenhuma entrega</td></tr>';
     }
 
     function showMonthlyReport() {
       const card = document.getElementById('monthly-report-card');
-      card.style.display = card.style.display === 'none' || card.style.display === '' ? 'block' : 'none';
+      card.style.display = card.style.display === 'none' ? 'block' : 'none';
       if (card.style.display === 'block') {
         renderMonthlyReport();
       }
@@ -1006,102 +1498,103 @@
 
     function renderMonthlyReport() {
       const monthInput = document.getElementById('reportMonth').value;
-      const tbody = document.getElementById('monthly-report-body');
+      const body = document.getElementById('monthly-report-body');
       if (!monthInput) {
-        tbody.innerHTML = '<tr><td colspan="2">Selecione um mês</td></tr>';
+        body.innerHTML = '<tr><td colspan="2">Selecione um mês</td></tr>';
         return;
       }
       const [year, month] = monthInput.split('-');
-      const list = (state.deliveries[state.clan] || []).filter(d => {
+      const deliveries = state.deliveries[state.clan] || [];
+      const filtered = deliveries.filter(d => {
         if (!d.data) return false;
         const [y, m] = d.data.split('-');
         return y === year && m === month;
       });
-      if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="2">Nenhuma entrega no período</td></tr>';
-        return;
-      }
-      const summary = {};
-      list.forEach(d => {
-        if (!summary[d.nick]) summary[d.nick] = [];
-        summary[d.nick].push(d.descricao);
+
+      const byNick = {};
+      filtered.forEach(d => {
+        if (!byNick[d.nick]) byNick[d.nick] = [];
+        byNick[d.nick].push(d);
       });
-      tbody.innerHTML = Object.entries(summary).map(([nick, descs]) => `
-        <tr>
-          <td>${nick}</td>
-          <td>${descs.join('; ')}</td>
-        </tr>
-      `).join('');
+
+      const rows = Object.keys(byNick).sort().map(nick => {
+        const resumo = byNick[nick].map(d => `${toBRDayMonthFromISO(d.data)} - ${d.descricao} (x${d.qtd || 1})`).join('<br>');
+        return `<tr><td>${nick}</td><td>${resumo}</td></tr>`;
+      });
+
+      body.innerHTML = rows.join('') || '<tr><td colspan="2">Nenhuma entrega nesse mês</td></tr>';
     }
 
+    // Repositório
     function addRepoItem() {
       const item = document.getElementById('repoItem').value.trim();
       const tipo = document.getElementById('repoType').value.trim();
       const boss = document.getElementById('repoBoss').value.trim();
-      const qtd = parseInt(document.getElementById('repoQuantity').value) || 0;
-      if (!item || !qtd) {
-        showMessage('❌ Item e quantidade obrigatórios!', 'error');
+      const qtdStr  = document.getElementById('repoQuantity').value.trim();
+
+      if (!item || !qtdStr) {
+        showMessage('❌ Item e quantidade são obrigatórios!', 'error');
         return;
       }
-      state.repoItems[state.clan].push({ item, tipo, boss, qtd });
+
+      const qtd = parseInt(qtdStr, 10);
+      if (isNaN(qtd) || qtd <= 0) {
+        showMessage('❌ Quantidade inválida!', 'error');
+        return;
+      }
+
+      const repo = state.repoItems[state.clan] || [];
+      const existingIndex = repo.findIndex(r => r.item.toLowerCase() === item.toLowerCase());
+      if (existingIndex !== -1) {
+        repo[existingIndex].qtd += qtd;
+        if (tipo) repo[existingIndex].tipo = tipo;
+        if (boss) repo[existingIndex].boss = boss;
+      } else {
+        repo.push({ item, tipo, boss, qtd });
+      }
+      state.repoItems[state.clan] = repo;
       saveState();
       renderRepo();
+      fillDeliveryItemOptions();
       document.getElementById('repoItem').value = '';
       document.getElementById('repoType').value = '';
       document.getElementById('repoBoss').value = '';
       document.getElementById('repoQuantity').value = '';
-      showMessage('✅ Salvo!', 'success');
+      showMessage('✅ Item salvo!', 'success');
     }
 
     function renderRepo() {
-      const tbody = document.getElementById('repoTableBody');
-      const search = (document.getElementById('searchRepoItem')?.value || '').toLowerCase();
-      let list = [...(state.repoItems[state.clan] || [])];
-      if (search) {
-        list = list.filter(r =>
-          (r.item || '').toLowerCase().includes(search) ||
-          (r.tipo || '').toLowerCase().includes(search) ||
-          (r.boss || '').toLowerCase().includes(search)
-        );
-      }
-      list.sort((a, b) => (a.item || '').localeCompare(b.item || '', 'pt-BR'));
-      tbody.innerHTML = list.map((r, i) => `
+      const body = document.getElementById('repo-body');
+      const repo = (state.repoItems[state.clan] || []).slice().sort((a, b) => (a.item || '').localeCompare(b.item || '', 'pt-BR'));
+      body.innerHTML = repo.map((r, i) => `
         <tr>
           <td>${r.item}</td>
-          <td>${r.tipo}</td>
-          <td>${r.boss}</td>
+          <td>${r.tipo || ''}</td>
+          <td>${r.boss || ''}</td>
           <td>${r.qtd}</td>
           <td>
-            <button class="btn btn-secondary" style="padding:3px 8px;font-size:11px;" onclick="editRepoItem(${i})">Editar</button>
-            <button class="btn btn-danger" style="padding:3px 8px;font-size:11px;" onclick="deleteRepoItem(${i})">Excluir</button>
+            <button class="btn btn-danger" style="padding:3px 8px;font-size:11px;" onclick="removeRepoItem(${i})">Excluir</button>
           </td>
         </tr>
-      `).join('') || '<tr><td colspan="5">Nenhum item</td></tr>';
+      `).join('') || '<tr><td colspan="5" class="empty">Nenhum item</td></tr>';
     }
 
-    function editRepoItem(index) {
-      const r = state.repoItems[state.clan][index];
-      document.getElementById('repoItem').value = r.item;
-      document.getElementById('repoType').value = r.tipo;
-      document.getElementById('repoBoss').value = r.boss;
-      document.getElementById('repoQuantity').value = r.qtd;
-      state._editingRepoIndex = index;
-    }
-
-    function deleteRepoItem(index) {
+    function removeRepoItem(index) {
+      if (!confirm('Excluir este item do repositório?')) return;
       state.repoItems[state.clan].splice(index, 1);
       saveState();
       renderRepo();
-      showMessage('✅ Excluído!', 'success');
+      fillDeliveryItemOptions();
+      showMessage('✅ Item removido!', 'success');
     }
 
-    function apagarRepositorio() {
-      if (confirm('Apagar TODO o repositório deste clã?')) {
-        state.repoItems[state.clan] = [];
-        saveState();
-        renderRepo();
-        showMessage('✅ Repositório apagado!', 'success');
-      }
+    function clearRepo() {
+      if (!confirm('Limpar TODO o repositório deste clã?')) return;
+      state.repoItems[state.clan] = [];
+      saveState();
+      renderRepo();
+      fillDeliveryItemOptions();
+      showMessage('✅ Repositório limpo!', 'success');
     }
 
     function renderAll() {
@@ -1110,6 +1603,8 @@
       renderDeliveries();
       renderRepo();
       fillEventNickOptions();
+      fillDeliveryNickOptions();
+      fillDeliveryItemOptions();
     }
 
     window.onload = loadState;
